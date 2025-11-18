@@ -1,0 +1,96 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ панель</title>
+</head>
+<body>
+     <nav >
+        <a href="index" style="margin-left: 10px;">Главная</a>
+        <a href="auth" style="margin-left: 10px;">Профиль</a>
+        <a href="bookings" style="margin-left: 10px;">Мои заявки</a>
+        <a href="create_booking" style="margin-left: 10px;">Создать заявку</a>
+        <a href="admin" style="margin-left: 10px;">Админ панель</a>
+    </nav>
+    <form>
+        <label for="">Админ логин:</label><input type="text" name="login"><br>
+        <label for="">Админ пароль:</label><input type="password", name="password"><br>
+        <button type="submit">Войти</button>
+    </form>
+    Админ панель
+    <ul></ul>
+    <script>
+        const form = document.querySelector('form');
+        const ul = document.querySelector("ul")
+        if(localStorage.getItem("admin_login") != null){
+            form.style.display = "none"
+            fetch('/bookings_all')
+            .then(res => res.json())
+            .then(result => {
+                console.log(result["result"])
+                result["result"].forEach(element => {
+                    const li = document.createElement("li");
+                    li.textContent = element[0] + " ; " + element[1]+ " ; " + element[2]+ " ; " + element[3]+ " ; " + element[4];
+                    const select = document.createElement("select")
+
+
+                    const option_new = document.createElement("option")
+                    option_new.value = "новая"
+                    option_new.textContent = "новая"
+
+                    const option_append = document.createElement("option")
+                    option_append.value = "подтверждённая"
+                    option_append.textContent = "подтверждённая"
+
+                    const option_canceled = document.createElement("option")
+                    option_canceled.value = "отклонена"
+                    option_canceled.textContent = "отклонена"
+
+                    select.appendChild(option_new)
+                    select.appendChild(option_append)
+                    select.appendChild(option_canceled)
+                    select.value = element[5]
+                    select.addEventListener("change", (event) => {
+                        // event.preventDefault()
+                        console.log(select.value)
+                        fetch(`/change_status?id=${element[0]}&status=${select.value}`)
+                        .then(res => res.json())
+                        .then(result => {
+                            if(result["message"] == "Fine"){
+                                window.location.href = "admin"
+                            }
+                        })
+                        
+                        // console.log(li.childNodes[0])
+                        // select.childNodes
+                    })
+                    li.appendChild(select)
+
+                    ul.appendChild(li)
+                });
+            })
+        }
+        form.addEventListener("submit", (event) => {
+            event.preventDefault()
+            const form_data = new FormData(form)
+            
+            fetch("/auth_admin", {
+                method: "POST",
+                // headers: {
+                //     "Content-Type": "application/json"
+                // },
+                body: form_data
+            })
+            .then(res => res.json())
+            .then(result => {
+                alert(result["message"])
+                if (result["message"] == "Fine"){
+                    localStorage.setItem("admin_login", form_data.get("login"));
+                    window.location.href = "/admin";
+                    
+                }
+            })
+        })
+    </script>
+</body>
+</html>

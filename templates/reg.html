@@ -1,0 +1,50 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Зарегистрироватся</title>
+</head>
+<body>
+     <nav >
+        <a href="index" style="margin-left: 10px;">Главная</a>
+        <a href="auth" style="margin-left: 10px;">Профиль</a>
+        <a href="bookings" style="margin-left: 10px;">Мои заявки</a>
+        <a href="create_booking" style="margin-left: 10px;">Создать заявку</a>
+        <a href="admin" style="margin-left: 10px;">Админ панель</a>
+    </nav>
+    <a href="auth">Есть аккаунт? Войти</a>
+    <form>
+        <label>ФИО:</label><input type="text" name="username"><br>
+        <label>Почта:</label><input type="email" name="email"><br>
+        <label>Пароль:</label><input type="password" name="password"><br>
+        <label>Подтверждение пароля:</label><input type="password" name="passwordConfirm"><br>
+        <label>Серия и номер паспорта:</label><input type="text" name="pasport"><br>
+        <button type="submit">Рарегистрироваться</button>
+    </form>
+    <script>
+        const form = document.querySelector('form');
+
+        form.addEventListener("submit", (event) => {
+            event.preventDefault()
+            const form_data = new FormData(form)
+            if (form_data.get("password") != form_data.get("passwordConfirm")){
+                alert("пароли не совпадают")
+            }
+            else {
+                fetch("/register", {
+                    method: "POST",
+                    // headers: {
+                    //     "Content-Type": "application/json"
+                    // },
+                    body: form_data
+                })
+                .then(res => res.json())
+                .then(result => {
+                    alert(result["message"])
+                    window.location.href = "/auth"
+                })
+            }
+        })
+    </script>
+</body>
+</html>

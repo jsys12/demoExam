@@ -1,0 +1,47 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход</title>
+</head>
+<body>
+    <nav >
+        <a href="index" style="margin-left: 10px;">Главная</a>
+        <a href="auth" style="margin-left: 10px;">Профиль</a>
+        <a href="bookings" style="margin-left: 10px;">Мои заявки</a>
+        <a href="create_booking" style="margin-left: 10px;">Создать заявку</a>
+        <a href="admin" style="margin-left: 10px;">Админ панель</a>
+    </nav>
+    <a href="reg">Нет аккаунта? Разегистрироваться</a>
+    <form>
+        <label>Почта:</label><input type="text" name="email"><br>
+        <label>Пароль:</label><input type="password" name="password"><br>
+        <button type="submit">Войти</button>
+    </form>
+    <script>
+        const form = document.querySelector('form');
+
+        form.addEventListener("submit", (event) => {
+            event.preventDefault()
+            const form_data = new FormData(form)
+            
+            fetch("/auth", {
+                method: "POST",
+                // headers: {
+                //     "Content-Type": "application/json"
+                // },
+                body: form_data
+            })
+            .then(res => res.json())
+            .then(result => {
+                alert(result["message"])
+                if (result["message"] == "Fine"){
+                    localStorage.setItem("email", result["email"])
+                    localStorage.setItem("id", result["id"])
+                    window.location.href = "/bookings"
+                }
+            })
+        })
+    </script>
+</body>
+</html>

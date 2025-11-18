@@ -1,0 +1,34 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заявки</title>
+</head>
+<body>
+    <body>
+     <nav >
+        <a href="index" style="margin-left: 10px;">Главная</a>
+        <a href="auth" style="margin-left: 10px;">Профиль</a>
+        <a href="bookings" style="margin-left: 10px;">Мои заявки</a>
+        <a href="create_booking" style="margin-left: 10px;">Создать заявку</a>
+        <a href="admin" style="margin-left: 10px;">Админ панель</a>
+    </nav>
+    <form><input type="hidden" name=""></form>
+    Ваши заявки
+    <ul></ul>
+    <script>
+        const ul = document.querySelector("ul");
+        fetch(`/bookings_view?user_id=${localStorage.getItem("id")}`)
+        .then(res => res.json())
+        .then(result => {
+            console.log(result["result"])
+            result["result"].forEach(element => {
+                const li = document.createElement("li");
+                li.textContent = element;
+                ul.appendChild(li)
+            });
+        })
+    </script>
+</body>
+</body>
+</html>

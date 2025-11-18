@@ -1,0 +1,50 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создать заявку</title>
+</head>
+<body>
+    <nav >
+        <a href="index" style="margin-left: 10px;">Главная</a>
+        <a href="auth" style="margin-left: 10px;">Профиль</a>
+        <a href="bookings" style="margin-left: 10px;">Мои заявки</a>
+        <a href="create_booking" style="margin-left: 10px;">Создать заявку</a>
+        <a href="admin" style="margin-left: 10px;">Админ панель</a>
+    </nav>
+    Создать заявку
+    <form>
+        <label for="">адресс</label><select name="adres" id="adres">
+            <option value="Тимуровская 30к1">Тимуровская 30к1</option>
+            <option value="Кушелевская 6к1">Кушелевская 6к1</option>
+            <option value="Мамитова 322">Мамитова 322</option>
+        </select><br>
+        <label for="">Дата въезда</label><input type="date" name="start_date"><br>
+        <label for="">Кол-во дней проживания</label><input type="number", name="quantity_days"><br>
+        <input type="hidden" id="user_id" name="user_id">
+        <button type="submit">Отправить</button>
+    </form>
+    <script>
+        const form = document.querySelector('form');
+        const id = document.querySelector("#user_id")
+        id.value = localStorage.getItem("id")
+        form.addEventListener("submit", (event) => {
+            event.preventDefault()
+            const form_data = new FormData(form)
+            
+            fetch("/create_booking", {
+                method: "POST",
+                body: form_data
+            })
+            .then(res => res.json())
+            .then(result => {
+                alert(result["message"])
+                if (result["message"] == "Fine"){
+                    localStorage.setItem("email", result["email"])
+                    window.location.href = "/bookings"
+                }
+            })
+        })
+    </script>
+</body>
+</html>
